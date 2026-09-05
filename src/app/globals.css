@@ -1,0 +1,45 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background-color: #fbfaf7;
+  color: #14201a;
+  font-family: var(--font-manrope), 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+  max-width: 100vw;
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: #d6ee7e;
+  color: #132a1e;
+}
+
+a {
+  color: #1b3a2a;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #2f5c42;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #a8ada4;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
