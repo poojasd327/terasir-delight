@@ -453,6 +453,365 @@ export default function ProductView({
         </Grid>
       </Box>
 
+      {/* Product Deep Dive Details: Ingredients, How to Use, Benefits & Highlights */}
+      {(product.ingredients || product.howToUse || product.benefits || product.highlights || product.description || product.note) && (
+        <Box
+          sx={{
+            maxWidth: 1400,
+            mx: 'auto',
+            px: { xs: 3, sm: 4, md: '44px' },
+            pt: { xs: '44px', md: '56px' },
+          }}
+        >
+          <Grid container spacing={{ xs: 3, md: 3.5 }} alignItems="stretch">
+            {/* Ingredients Card */}
+            {(product.ingredients || product.madeWith) && (
+              <Grid item xs={12} md={6} sx={{ display: 'flex' }}>
+                <Box
+                  sx={{
+                    backgroundColor: '#ffffff',
+                    borderRadius: '24px',
+                    border: '1px solid #e5ebe1',
+                    p: { xs: '24px', sm: '32px' },
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    boxShadow: '0 4px 20px rgba(20,48,31,0.03)',
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                    <Box
+                      sx={{
+                        width: 38,
+                        height: 38,
+                        borderRadius: '50%',
+                        backgroundColor: '#eef5ea',
+                        color: '#264830',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '18px',
+                      }}
+                    >
+                      🌿
+                    </Box>
+                    <Box>
+                      <Typography
+                        sx={{
+                          fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif',
+                          fontSize: '22px',
+                          fontWeight: 600,
+                          color: '#14201a',
+                          lineHeight: 1.2,
+                        }}
+                      >
+                        Ingredients & Composition
+                      </Typography>
+                      <Typography sx={{ fontSize: '12px', color: '#687765', fontWeight: 500 }}>
+                        Pure, natural & whole-food ingredients
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  {product.ingredients && product.ingredients.length > 0 ? (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1, mb: 2.5 }}>
+                      {product.ingredients.map((ing, idx) => (
+                        <Box
+                          key={idx}
+                          sx={{
+                            backgroundColor: '#f6f8f4',
+                            border: '1px solid #dde5d7',
+                            color: '#243e2b',
+                            fontSize: '13px',
+                            fontWeight: 500,
+                            px: '13px',
+                            py: '7px',
+                            borderRadius: '999px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 0.8,
+                          }}
+                        >
+                          <Box component="span" sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: '#387346' }} />
+                          {ing}
+                        </Box>
+                      ))}
+                    </Box>
+                  ) : product.madeWith ? (
+                    <Typography sx={{ fontSize: '14.5px', color: '#384d3b', lineHeight: 1.7, mb: 2 }}>
+                      {product.madeWith}
+                    </Typography>
+                  ) : null}
+
+                  {product.highlights && product.highlights.length > 0 && (
+                    <Box
+                      sx={{
+                        mt: 'auto',
+                        pt: 2,
+                        borderTop: '1px dashed #e2e8dc',
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: 1,
+                      }}
+                    >
+                      {product.highlights.map((h, i) => (
+                        <Box
+                          key={i}
+                          sx={{
+                            fontSize: '11.5px',
+                            fontWeight: 600,
+                            color: '#245230',
+                            backgroundColor: '#edf6e8',
+                            border: '1px solid #d4e7cb',
+                            px: '11px',
+                            py: '5px',
+                            borderRadius: '8px',
+                          }}
+                        >
+                          ✓ {h}
+                        </Box>
+                      ))}
+                    </Box>
+                  )}
+                </Box>
+              </Grid>
+            )}
+
+            {/* How to Use Card */}
+            {product.howToUse && product.howToUse.length > 0 && (
+              <Grid item xs={12} md={6} sx={{ display: 'flex' }}>
+                <Box
+                  sx={{
+                    backgroundColor: '#ffffff',
+                    borderRadius: '24px',
+                    border: '1px solid #e5ebe1',
+                    p: { xs: '24px', sm: '32px' },
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    boxShadow: '0 4px 20px rgba(20,48,31,0.03)',
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                    <Box
+                      sx={{
+                        width: 38,
+                        height: 38,
+                        borderRadius: '50%',
+                        backgroundColor: '#fbf3ea',
+                        color: '#9c5317',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '18px',
+                      }}
+                    >
+                      🥣
+                    </Box>
+                    <Box>
+                      <Typography
+                        sx={{
+                          fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif',
+                          fontSize: '22px',
+                          fontWeight: 600,
+                          color: '#14201a',
+                          lineHeight: 1.2,
+                        }}
+                      >
+                        How to Use
+                      </Typography>
+                      <Typography sx={{ fontSize: '12px', color: '#687765', fontWeight: 500 }}>
+                        Simple daily rituals for best nourishment
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.4, mt: 1 }}>
+                    {product.howToUse.map((step, sIdx) => (
+                      <Box
+                        key={sIdx}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: 1.4,
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            width: 22,
+                            height: 22,
+                            borderRadius: '50%',
+                            backgroundColor: '#14301f',
+                            color: '#d6ee7e',
+                            fontSize: '11px',
+                            fontWeight: 700,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0,
+                            mt: '2px',
+                          }}
+                        >
+                          {sIdx + 1}
+                        </Box>
+                        <Typography sx={{ fontSize: '13.5px', color: '#2c3a2a', lineHeight: 1.55 }}>
+                          {step}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
+              </Grid>
+            )}
+
+            {/* Health & Wellness Benefits Card */}
+            {((product.benefits && product.benefits.length > 0) || product.benefitsSummary) && (
+              <Grid item xs={12} md={product.note ? 7 : 12} sx={{ display: 'flex' }}>
+                <Box
+                  sx={{
+                    backgroundColor: '#fafbf8',
+                    borderRadius: '24px',
+                    border: '1px solid #e3eae0',
+                    p: { xs: '24px', sm: '32px' },
+                    width: '100%',
+                    boxShadow: '0 4px 20px rgba(20,48,31,0.03)',
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                    <Box
+                      sx={{
+                        width: 38,
+                        height: 38,
+                        borderRadius: '50%',
+                        backgroundColor: '#e7f3ec',
+                        color: '#1a5933',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '18px',
+                      }}
+                    >
+                      ✨
+                    </Box>
+                    <Box>
+                      <Typography
+                        sx={{
+                          fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif',
+                          fontSize: '22px',
+                          fontWeight: 600,
+                          color: '#14201a',
+                          lineHeight: 1.2,
+                        }}
+                      >
+                        Benefits
+                      </Typography>
+                      <Typography sx={{ fontSize: '12px', color: '#687765', fontWeight: 500 }}>
+                        Designed for daily vitality & wellness
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  {product.benefitsSummary && (
+                    <Typography
+                      sx={{
+                        fontSize: '14.5px',
+                        color: '#384838',
+                        lineHeight: 1.7,
+                        mb: 2.2,
+                        fontWeight: 400,
+                      }}
+                    >
+                      {product.benefitsSummary}
+                    </Typography>
+                  )}
+
+                  {product.benefits && product.benefits.length > 0 && (
+                    <Grid container spacing={1.5}>
+                      {product.benefits.map((bText, bIdx) => {
+                        const emojiMatch = bText.match(/^([\p{Extended_Pictographic}\uD83C-\uDBFF\uDC00-\uDFFF\u2600-\u26FF\u2700-\u27BF]+)\s*(.*)$/u);
+                        const leadingEmoji = emojiMatch ? emojiMatch[1] : null;
+                        const displayText = emojiMatch ? emojiMatch[2] : bText;
+
+                        return (
+                          <Grid item xs={12} sm={6} key={bIdx}>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                alignItems: 'flex-start',
+                                gap: 1.2,
+                                backgroundColor: '#ffffff',
+                                border: '1px solid #e7eee4',
+                                borderRadius: '12px',
+                                p: '12px 14px',
+                                height: '100%',
+                              }}
+                            >
+                              {leadingEmoji ? (
+                                <Box component="span" sx={{ fontSize: 17, lineHeight: 1.2, flexShrink: 0, mt: '1px' }}>
+                                  {leadingEmoji}
+                                </Box>
+                              ) : (
+                                <CheckCircleOutlineIcon sx={{ color: '#276839', fontSize: 18, mt: '2px', flexShrink: 0 }} />
+                              )}
+                              <Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#1e2b1f', lineHeight: 1.5 }}>
+                                {displayText}
+                              </Typography>
+                            </Box>
+                          </Grid>
+                        );
+                      })}
+                    </Grid>
+                  )}
+                </Box>
+              </Grid>
+            )}
+
+            {/* Note / Advisory Card */}
+            {product.note && (
+              <Grid item xs={12} md={product.benefits ? 5 : 12} sx={{ display: 'flex' }}>
+                <Box
+                  sx={{
+                    backgroundColor: '#fbf9f4',
+                    borderRadius: '24px',
+                    border: '1px solid #eee5d3',
+                    p: { xs: '24px', sm: '32px' },
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 20px rgba(20,48,31,0.03)',
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, mb: 1.5 }}>
+                    <Box sx={{ fontSize: '20px' }}>💡</Box>
+                    <Typography
+                      sx={{
+                        fontFamily: 'var(--font-playfair), "Playfair Display", Georgia, serif',
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: '#5c4524',
+                      }}
+                    >
+                      Artisanal Nutrition Note
+                    </Typography>
+                  </Box>
+                  <Typography
+                    sx={{
+                      fontSize: '13.5px',
+                      color: '#6e5634',
+                      lineHeight: 1.7,
+                      fontStyle: 'italic',
+                    }}
+                  >
+                    &ldquo;{product.note}&rdquo;
+                  </Typography>
+                </Box>
+              </Grid>
+            )}
+          </Grid>
+        </Box>
+      )}
+
       {/* Often taken alongside */}
       {relatedProducts.length > 0 && (
         <Box

@@ -39,7 +39,16 @@ function findProductByParam(catSlug: string, param: string): ProductItem | null 
   });
   if (partial) return partial;
 
-  // 4. Try matching by core keywords
+  // 4. Try matching shot or manthe/menthya alias
+  const alias = items.find((p) => {
+    if (p.shot && (slugify(p.shot) === lowerParam || p.shot.replace(/[^a-z0-9]/g, '').includes(cleanParam))) return true;
+    if (lowerParam.includes('manthe') && p.name.toLowerCase().includes('menthya')) return true;
+    if (lowerParam.includes('menthya') && p.name.toLowerCase().includes('manthe')) return true;
+    return false;
+  });
+  if (alias) return alias;
+
+  // 5. Try matching by core keywords
   const words = lowerParam.split(/[^a-z0-9]+/).filter((w) => w.length >= 4 && !['laddu', 'laddoo', 'powder', 'mix'].includes(w));
   if (words.length > 0) {
     const wordMatch = items.find((p) => {
@@ -166,6 +175,10 @@ export default function TaayiApp() {
     setIsEnquiryOpen(false);
   };
 
+  const handleCloseLeadModal = React.useCallback(() => {
+    setIsLeadModalOpen(false);
+  }, []);
+
   const handleGoAbout = () => {
     if (page !== 'home') {
       setPage('home');
@@ -258,7 +271,7 @@ export default function TaayiApp() {
       {/* Lead Capture Popup Modal */}
       <LeadPopupModal
         open={isLeadModalOpen}
-        onClose={() => setIsLeadModalOpen(false)}
+        onClose={handleCloseLeadModal}
         initialProduct={leadModalProduct}
         initialQuantity={leadModalQuantity}
       />

@@ -26,7 +26,7 @@ import CardGiftcardRoundedIcon from '@mui/icons-material/CardGiftcardRounded';
 
 export const PRODUCTS_LIST = [
   'Biotin Laddu (Nuts & Seeds) - ₹375 (250g)',
-  'Moringa Magic Laddu - ₹350 (250g)',
+  'Moringa Laddu - ₹350 (250g)',
   'Cashew Coconut Laddu - ₹325 (250g)',
   'Healthy Almond Laddu - ₹350 (250g)',
   'Black Sesame Laddu - ₹250 (250g)',
@@ -41,7 +41,7 @@ export const PRODUCTS_LIST = [
   'Lactation Drink Mix - ₹200 (200gm)',
   'Herbal Bath Powder - ₹200 (200gm)',
   'Traditional Massage Oil - ₹200 (100ml)',
-  'Manthe Hittu - ₹200 (250gm)',
+  'Menthya Hittu - ₹200 (250gm)',
   'Personalized Nutrition Box (Custom Formulation)',
 ];
 
@@ -74,7 +74,13 @@ export default function LeadPopupModal({
   // Sync initialProduct if passed
   React.useEffect(() => {
     if (initialProduct) {
-      const match = PRODUCTS_LIST.find((p) => p.toLowerCase().includes(initialProduct.toLowerCase()));
+      const match = PRODUCTS_LIST.find((p) => {
+        const pLower = p.toLowerCase();
+        const initLower = initialProduct.toLowerCase();
+        if (pLower.includes(initLower)) return true;
+        if ((initLower.includes('manthe') || initLower.includes('menthya')) && (pLower.includes('manthe') || pLower.includes('menthya'))) return true;
+        return false;
+      });
       if (match) {
         setProductName(match);
       } else {
@@ -90,21 +96,34 @@ export default function LeadPopupModal({
     }
   }, [initialQuantity]);
 
-  // Automatically open modal 10 seconds after each page load
+  // Automatically open modal ONCE per visitor session (10s after initial load)
   React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // Check if popup was already shown or dismissed in this session
+    const alreadyShown = sessionStorage.getItem('terasiri_lead_popup_shown');
+    if (alreadyShown === 'true') {
+      return;
+    }
+
     const timer = setTimeout(() => {
-      if (isControlled && controlledOnClose) {
-        // If controlled by parent, we can dispatch window event or trigger parent
-        window.dispatchEvent(new CustomEvent('open_terasiri_lead_modal'));
-      } else {
-        setInternalOpen(true);
+      const checkAgain = sessionStorage.getItem('terasiri_lead_popup_shown');
+      if (checkAgain === 'true') return;
+
+      try {
+        sessionStorage.setItem('terasiri_lead_popup_shown', 'true');
+      } catch (err) {
+        // Ignore storage errors
       }
+
+      window.dispatchEvent(new CustomEvent('open_terasiri_lead_modal'));
+      setInternalOpen(true);
     }, 10000); // 10 seconds
 
     return () => clearTimeout(timer);
-  }, [isControlled, controlledOnClose]);
+  }, []);
 
-  // Listen for open events
+  // Listen for manual open events (e.g., from buttons, floating triggers)
   React.useEffect(() => {
     const handleOpenEvent = (e: any) => {
       setSubmitted(false);
@@ -125,6 +144,11 @@ export default function LeadPopupModal({
   }, [isControlled]);
 
   const handleClose = () => {
+    try {
+      sessionStorage.setItem('terasiri_lead_popup_shown', 'true');
+    } catch (err) {
+      // Ignore
+    }
     if (isControlled && controlledOnClose) {
       controlledOnClose();
     } else {

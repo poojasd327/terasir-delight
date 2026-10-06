@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "zip": "cd out && zip -r -X ../out.zip . -x '*.DS_Store'",
+    "build:zip": "next build && cd out && zip -r -X ../out.zip . -x '*.DS_Store'",
     "start": "next start",
     "lint": "next lint"
   },
