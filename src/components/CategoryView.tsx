@@ -30,6 +30,7 @@ interface CategoryViewProps {
 
 export default function CategoryView({
   currentSlug,
+  onSelectCategory,
   onGoHome,
   onOpenProduct,
   onOpenEnquiry,
@@ -38,6 +39,34 @@ export default function CategoryView({
     COLLECTIONS.find((c) => c.slug === currentSlug) || COLLECTIONS[0];
   const solves = SOLVES[currentCollection.slug] || [];
   const products = PRODUCTS[currentCollection.slug] || [];
+
+  const tabContainerRef = React.useRef<HTMLDivElement>(null);
+  const isDraggingTab = React.useRef(false);
+  const tabStartX = React.useRef(0);
+  const tabScrollLeft = React.useRef(0);
+  const tabMoved = React.useRef(false);
+
+  const handleTabMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!tabContainerRef.current) return;
+    isDraggingTab.current = true;
+    tabMoved.current = false;
+    tabStartX.current = e.pageX - tabContainerRef.current.offsetLeft;
+    tabScrollLeft.current = tabContainerRef.current.scrollLeft;
+  };
+
+  const handleTabMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDraggingTab.current || !tabContainerRef.current) return;
+    const x = e.pageX - tabContainerRef.current.offsetLeft;
+    const walk = (x - tabStartX.current) * 1.5;
+    if (Math.abs(walk) > 4) {
+      tabMoved.current = true;
+    }
+    tabContainerRef.current.scrollLeft = tabScrollLeft.current - walk;
+  };
+
+  const handleTabMouseUpOrLeave = () => {
+    isDraggingTab.current = false;
+  };
 
   return (
     <Box sx={{ width: '100%', pb: '100px', backgroundColor: '#fbfaf7' }}>
@@ -90,13 +119,83 @@ export default function CategoryView({
         </Typography>
       </Box>
 
+      {/* Category Tabs Switcher Bar */}
+      <Box
+        sx={{
+          maxWidth: 1400,
+          mx: 'auto',
+          px: { xs: 3, sm: 4, md: '50px' },
+          pt: '16px',
+        }}
+      >
+        <Box
+          ref={tabContainerRef}
+          onMouseDown={handleTabMouseDown}
+          onMouseMove={handleTabMouseMove}
+          onMouseUp={handleTabMouseUpOrLeave}
+          onMouseLeave={handleTabMouseUpOrLeave}
+          sx={{
+            display: 'flex',
+            gap: { xs: 1, sm: 1.5 },
+            overflowX: 'auto',
+            pb: 1,
+            pt: 0.5,
+            WebkitOverflowScrolling: 'touch',
+            scrollbarWidth: 'none',
+            '&::-webkit-scrollbar': { display: 'none' },
+            touchAction: 'pan-x pan-y',
+            cursor: 'grab',
+            '&:active': { cursor: 'grabbing' },
+            userSelect: 'none',
+          }}
+        >
+          {COLLECTIONS.map((col) => {
+            const isSelected = col.slug === currentCollection.slug;
+            return (
+              <Box
+                key={col.slug}
+                onClick={() => {
+                  if (!tabMoved.current && onSelectCategory) {
+                    onSelectCategory(col.slug);
+                  }
+                }}
+                sx={{
+                  cursor: 'pointer',
+                  px: { xs: 2, sm: 2.6 },
+                  py: { xs: 1, sm: 1.2 },
+                  borderRadius: '999px',
+                  fontSize: { xs: '13px', md: '14px' },
+                  fontWeight: isSelected ? 700 : 500,
+                  whiteSpace: 'nowrap',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  transition: 'all 0.22s ease',
+                  backgroundColor: isSelected ? '#14301f' : '#ffffff',
+                  color: isSelected ? '#d6ee7e' : '#2d3b2b',
+                  border: `1.5px solid ${isSelected ? '#14301f' : '#e2e9df'}`,
+                  boxShadow: isSelected ? '0 4px 14px rgba(20,48,31,0.18)' : '0 2px 6px rgba(0,0,0,0.03)',
+                  '&:hover': {
+                    backgroundColor: isSelected ? '#14301f' : '#f4f7f2',
+                    borderColor: '#14301f',
+                    transform: 'translateY(-1px)',
+                  },
+                }}
+              >
+                <span>Stage {col.num}: {col.slug.charAt(0).toUpperCase() + col.slug.slice(1)}</span>
+              </Box>
+            );
+          })}
+        </Box>
+      </Box>
+
       {/* Main Dedicated Hero Banner */}
       <Box
         sx={{
           maxWidth: 1400,
           mx: 'auto',
           px: { xs: 3, sm: 4, md: '50px' },
-          pt: '20px',
+          pt: '16px',
         }}
       >
         <Box

@@ -205,7 +205,7 @@ export default function LeadPopupModal({
       }).catch(() => null);
 
       // 2. Next.js route proxy backup
-      const apiPromise = fetch('/terasiri/api/lead/', {
+      const apiPromise = fetch('/api/lead/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

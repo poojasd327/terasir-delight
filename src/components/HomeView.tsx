@@ -31,7 +31,60 @@ export default function HomeView({
 }: HomeViewProps) {
   const [selectedCategory, setSelectedCategory] = React.useState<string>('all');
   const sliderRef = React.useRef<HTMLDivElement>(null);
+  const chipRef = React.useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = React.useState(false);
+
+  // Drag-to-scroll handlers for chips
+  const isDraggingChips = React.useRef(false);
+  const chipStartX = React.useRef(0);
+  const chipScrollLeft = React.useRef(0);
+  const chipMoved = React.useRef(false);
+
+  const handleChipMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!chipRef.current) return;
+    isDraggingChips.current = true;
+    chipMoved.current = false;
+    chipStartX.current = e.pageX - chipRef.current.offsetLeft;
+    chipScrollLeft.current = chipRef.current.scrollLeft;
+  };
+  const handleChipMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDraggingChips.current || !chipRef.current) return;
+    const x = e.pageX - chipRef.current.offsetLeft;
+    const walk = (x - chipStartX.current) * 1.5;
+    if (Math.abs(walk) > 4) {
+      chipMoved.current = true;
+    }
+    chipRef.current.scrollLeft = chipScrollLeft.current - walk;
+  };
+  const handleChipMouseUpOrLeave = () => {
+    isDraggingChips.current = false;
+  };
+
+  // Drag-to-scroll handlers for product slider
+  const isDraggingSlider = React.useRef(false);
+  const sliderStartX = React.useRef(0);
+  const sliderScrollLeft = React.useRef(0);
+  const sliderMoved = React.useRef(false);
+
+  const handleSliderMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!sliderRef.current) return;
+    isDraggingSlider.current = true;
+    sliderMoved.current = false;
+    sliderStartX.current = e.pageX - sliderRef.current.offsetLeft;
+    sliderScrollLeft.current = sliderRef.current.scrollLeft;
+  };
+  const handleSliderMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDraggingSlider.current || !sliderRef.current) return;
+    const x = e.pageX - sliderRef.current.offsetLeft;
+    const walk = (x - sliderStartX.current) * 1.5;
+    if (Math.abs(walk) > 5) {
+      sliderMoved.current = true;
+    }
+    sliderRef.current.scrollLeft = sliderScrollLeft.current - walk;
+  };
+  const handleSliderMouseUpOrLeave = () => {
+    isDraggingSlider.current = false;
+  };
 
   const categoryConfigs: { slug: keyof typeof PRODUCTS; label: string }[] = React.useMemo(() => [
     { slug: 'pregnancy', label: 'Pregnancy' },
@@ -408,6 +461,11 @@ export default function HomeView({
 
           {/* Category Filter Chips */}
           <Box
+            ref={chipRef}
+            onMouseDown={handleChipMouseDown}
+            onMouseMove={handleChipMouseMove}
+            onMouseUp={handleChipMouseUpOrLeave}
+            onMouseLeave={handleChipMouseUpOrLeave}
             sx={{
               display: 'flex',
               gap: { xs: 0.9, sm: 1.2 },
@@ -417,6 +475,10 @@ export default function HomeView({
               WebkitOverflowScrolling: 'touch',
               scrollbarWidth: 'none',
               '&::-webkit-scrollbar': { display: 'none' },
+              touchAction: 'pan-x pan-y',
+              cursor: 'grab',
+              '&:active': { cursor: 'grabbing' },
+              userSelect: 'none',
             }}
           >
             {categories.map((cat) => {
@@ -424,7 +486,11 @@ export default function HomeView({
               return (
                 <Box
                   key={cat.slug}
-                  onClick={() => setSelectedCategory(cat.slug)}
+                  onClick={() => {
+                    if (!chipMoved.current) {
+                      setSelectedCategory(cat.slug);
+                    }
+                  }}
                   sx={{
                     cursor: 'pointer',
                     px: { xs: 1.6, sm: 2.2 },
@@ -469,6 +535,10 @@ export default function HomeView({
         {/* Sliding Carousel Track */}
         <Box
           ref={sliderRef}
+          onMouseDown={handleSliderMouseDown}
+          onMouseMove={handleSliderMouseMove}
+          onMouseUp={handleSliderMouseUpOrLeave}
+          onMouseLeave={handleSliderMouseUpOrLeave}
           sx={{
             display: 'flex',
             gap: { xs: 2, md: 3 },
@@ -482,14 +552,20 @@ export default function HomeView({
             WebkitOverflowScrolling: 'touch',
             scrollbarWidth: 'none',
             '&::-webkit-scrollbar': { display: 'none' },
+            touchAction: 'pan-x pan-y',
             cursor: 'grab',
             '&:active': { cursor: 'grabbing' },
+            userSelect: 'none',
           }}
         >
           {filteredProducts.map(({ prod, slug, categoryName }, idx) => (
             <Box
               key={`${slug}-${prod.name}-${idx}`}
-              onClick={() => onOpenProduct(prod, slug)}
+              onClick={() => {
+                if (!sliderMoved.current) {
+                  onOpenProduct(prod, slug);
+                }
+              }}
               sx={{
                 width: {
                   xs: '100%',
